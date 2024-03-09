@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Experiment
+metadata:
+  name: {{ include "test-go-app.name" . }}-experiment
+  labels:
+    app: {{ include "test-go-app.name" . }}
+spec:
+  templates:
+    - name: {{ include "test-go-app.name" . }}
+      replicas: {{ .Values.simple.replicaCount }}
+      selector:
+        matchLabels:
+          app: {{ include "test-go-app.name" . }}
+      template:
+        metadata:
+          labels:
+            app: {{ include "test-go-app.name" . }}
+        spec:
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.simple.image.repository }}:{{ .Values.simple.image.tag }}"
+              ports:
+                - name: http
+                  containerPort: 8080
+  progressDeadlineSeconds: 60

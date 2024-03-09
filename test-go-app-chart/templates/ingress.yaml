@@ -1,22 +1,22 @@
+# templates/ingress.yaml
+
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-go-app-ingress
+  name: {{ include "test-go-app.fullname" . }}
   annotations:
-    {{- toYaml .Values.ingress.annotations | nindent 8 }}
+{{ toYaml .Values.ingress.annotations | indent 4 }}
 spec:
   rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: {{ .Values.ingress.hosts | first }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ . }}
+          - path: {{ .Values.ingress.path }}
             pathType: Prefix
             backend:
               service:
-                name: test-go-app-service
+                name: {{ include "test-go-app.fullname" . }}
                 port:
-                  number: {{ $.Values.service.port }}
-          {{- end }}
-    {{- end }}
+                  number: {{ .Values.service.port }}
+{{- end }}

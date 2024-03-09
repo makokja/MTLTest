@@ -1,21 +1,27 @@
+# templates/deployment.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ default .Chart.Name .Values.fullnameOverride }}
+  name: {{ include "test-go-app.name" . }}
   labels:
-    {{- include "test-go-app-chart.labels" . | nindent 4 }}
+    app: {{ include "test-go-app.name" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.simple.replicaCount }}
   selector:
     matchLabels:
-      {{- include "test-go-app-chart.selectorLabels" . | nindent 8 }}
+      app: {{ include "test-go-app.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        {{- include "test-go-app-chart.selectorLabels" . | nindent 12 }}
+        app: {{ include "test-go-app.name" . }}
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.simple.image.repository }}:{{ .Values.simple.image.tag }}"
+          imagePullPolicy: {{ .Values.simple.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - name: http
+              containerPort: 8080

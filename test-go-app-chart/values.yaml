@@ -1,76 +1,49 @@
-# Default values for test-go-app-chart.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Deployment strategy options: simple, canary, blue-green
+deploymentStrategy: blue-green
 
-replicaCount: 1
+# Configuration options for Simple Deployment
+simple:
+  replicaCount: 1            # Number of replicas for the application
+  image:
+    repository: makokja/test-go-app
+    pullPolicy: IfNotPresent
+    tag: "1.0"
 
-image:
-  repository: makokja/test-go-app
-  pullPolicy: IfNotPresent
-  tag: "1.0"
+# Configuration options for Canary Deployment
+canary:
+  enabled: false           # Set to true to enable Canary Deployment
+  steps: 5                   # Number of steps for Canary Deployment
+  trafficWeight: 20          # Initial weight for canary traffic (percentage)
+  incrementWeight: 20        # Incremental weight for each step (percentage)
+  interval: 10               # Interval between steps in seconds
+  scaleDownDelay: 60         # Delay in seconds before scaling down the old version
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+# Configuration options for Blue-Green Deployment
+blueGreen:
+  enabled: true           # Set to true to enable Blue-Green Deployment
+  scaleUpDelay: 60           # Delay in seconds before scaling up the new version
+  scaleDownDelay: 60         # Delay in seconds before scaling down the old version
+  image:
+    repository: makokja/test-go-app
+    pullPolicy: IfNotPresent
+    tag: "1.0"
 
-createServiceAccount: true
-serviceAccount:
-  name: my-app-service-account
-iamRoleArn: arn:aws:iam::123456789012:role/my-iam-role
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
+# Service configuration
 service:
-  type: ClusterIP
-  port: 8080
+  type: ClusterIP            # Kubernetes service type
+  port: 80                   # Port on which the service listens
+  targetPort: 8080           # Port on which the application listens
 
+# Ingress configuration
 ingress:
-  enabled: true
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: test-go-app.ex.com
-      paths:
-        - /
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  enabled: false             # Set to true to enable Ingress
+  annotations:               # Ingress annotations (if any)
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  path: /                    # Path on which the application is served
+  hosts:                     # List of hosts for the Ingress
+    - goapp.example.com
 
 autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  enabled: false  # Set to true to enable Horizontal Pod Autoscaler
 
-nodeSelector: {}
 
-tolerations: []
-
-affinity: {}

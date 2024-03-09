@@ -1,0 +1,50 @@
+# templates/argo-rollouts/rollouts.yaml
+
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "test-go-app.name" . }}
+  labels:
+    app: {{ include "test-go-app.name" . }}
+spec:
+  replicas: {{ .Values.simple.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "test-go-app.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "test-go-app.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.simple.image.repository }}:{{ .Values.simple.image.tag }}"
+          ports:
+            - name: http
+              containerPort: 8080
+  strategy:
+    blueGreen:
+      activeService: "{{ include "test-go-app.name" . }}"
+      previewService: "{{ include "test-go-app.name" . }}-preview"
+      autoPromotionEnabled: false
+{{- if .Values.blueGreen.enabled }}
+      autoPromotionSeconds: 300
+{{- end }}
+    canary:
+      steps:
+        - setWeight: 10
+          pause: {}
+        - setWeight: 30
+          pause:
+            duration: 60s
+      maxUnavailable: 0
+      trafficRouting:
+        istio:
+          virtualService:
+            name: "{{ include "test-go-app.name" . }}-vs"
+{{- if .Values.canary.enabled }}
+      trafficRouting:
+        istio:
+          virtualService:
+            name: "{{ include "test-go-app.name" . }}-vs"
+{{- end }}
