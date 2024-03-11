@@ -26,9 +26,11 @@ The chart should also have flexibility to allow Developers to adjust Values. The
 
 Expected Output: Helm Chart with values file to deploy the application
 
-Bluegreen https://github.com/makokja/MTLTest/blob/main/test-go-app-chart/templates/bluegreen-rollout.yaml
+Bluegreen https://github.com/makokja/MTLTest/blob/main/test-go-app-chart/templates/bluegreen-rollout.yaml 
+
 Canary https://github.com/makokja/MTLTest/blob/main/test-go-app-chart/templates/canary-rollout.yaml
-value file (just change the deploymwnt statregy  https://github.com/makokja/MTLTest/blob/main/test-go-app-chart/values.yaml
+
+Values.yaml file (just change the deploymwnt statregy  https://github.com/makokja/MTLTest/blob/main/test-go-app-chart/values.yaml
 
 4. Setup EKS cluster with the related resources to run EKS like VPC, Subnets, etc. by following EKS Best Practices using any IaC tools (Bonus point: use Terraform/Terragrunt)
 
