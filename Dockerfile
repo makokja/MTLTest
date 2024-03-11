@@ -1,4 +1,4 @@
-# Use a base image with Go installed
+# Use a multi-stage build to compile the Go application
 FROM golang:1.17 AS builder
 
 # Set the working directory inside the container
@@ -11,8 +11,8 @@ RUN go mod download
 # Copy the source code into the container
 COPY . .
 
-# Build the Go application
-RUN CGO_ENABLED=0 GOOS=linux go build -o app .
+# Build the Go application for the target architecture
+RUN GOARCH=amd64 GOOS=linux go build -o app .
 
 # Use a minimal base image for the final container
 FROM alpine:latest

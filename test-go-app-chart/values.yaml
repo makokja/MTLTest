@@ -9,7 +9,7 @@ replicaCount: 1
 image:
   repository: makokja/test-go-app
   pullPolicy: IfNotPresent
-  tag: "1.0"
+  tag: "1.2"
 
 imagePullSecrets: []
 nameOverride: ""
