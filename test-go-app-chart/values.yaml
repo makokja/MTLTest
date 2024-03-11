@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-deploymentStrategy: "canary"  # Options: simple, canary, bluegreen
+deploymentStrategy: "bluegreen"  # Options: simple, canary, bluegreen
 
 replicaCount: 1
 
@@ -70,6 +70,9 @@ resources: {}
   #   memory: 128Mi
 analysis:
   url: "http://test.com/metrics"
+
+bluegreen:
+  activeService: "test-go-app-test-go-app-chart"
 
 autoscaling:
   enabled: false

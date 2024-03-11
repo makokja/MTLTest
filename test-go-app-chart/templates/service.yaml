@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "test-go-app-chart.fullname" . }}
+  name: {{ include "MTLTest.fullname" . }}
   labels:
-    {{- include "test-go-app-chart.labels" . | nindent 4 }}
+    {{- include "MTLTest.labels" . | nindent 4 }}
 spec:
   selector:
-    {{- include "test-go-app-chart.selectorLabels" . | nindent 8 }}
+    {{- include "MTLTest.selectorLabels" . | nindent 4 }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
