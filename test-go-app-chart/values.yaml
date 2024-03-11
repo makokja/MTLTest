@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+deploymentStrategy: "canary"  # Options: simple, canary, bluegreen
+
 replicaCount: 1
 
 image:
@@ -13,10 +15,13 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-createServiceAccount: true
 serviceAccount:
-  name: my-app-service-account
-iamRoleArn: arn:aws:iam::123456789012:role/my-iam-role
+  # Whether to create a service account or not
+  create: true
+  # Name of the service account to create or use
+  name: eks-app-service-account
+  # ARN of the IAM role associated with the service account
+  iamRoleArn: arn:aws:iam::857111154691:role/eks-app-role
 
 podAnnotations: {}
 
@@ -34,6 +39,8 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 8080
+
+containerPort: 8080
 
 ingress:
   enabled: true
@@ -61,6 +68,8 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+analysis:
+  url: "http://test.com/metrics"
 
 autoscaling:
   enabled: false

@@ -15,6 +15,22 @@ If release name contains chart name it will be used as a full name.
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/* Generate a fully qualified name for resources */}}
+{{- define "MTLTest.fullname" -}}
+{{- printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/* Generate a name for the application */}}
+{{- define "MTLTest.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/* Generate labels for Kubernetes resources */}}
+{{- define "MTLTest.labels" -}}
+app.kubernetes.io/name: {{ include "MTLTest.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -33,6 +49,11 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
+
+{{/* Generate selector labels for Kubernetes resources */}}
+{{- define "MTLTest.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "MTLTest.name" . }}
+{{- end -}}
 
 {{/*
 Selector labels

@@ -1,21 +1,23 @@
+{{- if eq .Values.deploymentStrategy "simple" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ default .Chart.Name .Values.fullnameOverride }}
+  name: {{ include "MTLTest.fullname" . }}
   labels:
-    {{- include "test-go-app-chart.labels" . | nindent 4 }}
+    {{- include "MTLTest.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "test-go-app-chart.selectorLabels" . | nindent 8 }}
+      {{- include "MTLTest.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "test-go-app-chart.selectorLabels" . | nindent 12 }}
+        {{- include "MTLTest.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: {{ .Values.containerPort }}
+{{- end }}

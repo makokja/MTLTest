@@ -1,0 +1,53 @@
+{{- if eq .Values.deploymentStrategy "canary" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "MTLTest.fullname" . }}
+  labels:
+    {{- include "MTLTest.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "MTLTest.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "MTLTest.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+      # Additional container configurations if needed
+  strategy:
+    canary:
+      steps:
+      - setWeight: 25
+      - pause: 
+          duration: "10s"
+      - setWeight: 50
+      - pause: 
+          duration: "10s"
+      - setWeight: 75
+      - pause: 
+          duration: "10s"
+      - setWeight: 100
+    # Canary deployment settings
+  analysis:
+    templates:
+      - templateName: metric
+        successCondition: "status.successRate > 99"
+        failureCondition: "status.successRate < 99"
+    args:
+      - name: url
+        value: "{{ .Values.analysis.url }}"
+      - name: duration
+        value: "60"
+    metrics:
+      - name: successRate
+        interval: 60s
+        sampleCount: 20
+        failureCondition: "status.successRate < 99"
+{{- end }}
