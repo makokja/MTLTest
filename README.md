@@ -26,9 +26,14 @@ The chart should also have flexibility to allow Developers to adjust Values. The
 
 Expected Output: Helm Chart with values file to deploy the application
 
+Bluegreen https://github.com/makokja/MTLTest/blob/main/test-go-app-chart/templates/bluegreen-rollout.yaml
+Canary https://github.com/makokja/MTLTest/blob/main/test-go-app-chart/templates/canary-rollout.yaml
+value file (just change the deploymwnt statregy  https://github.com/makokja/MTLTest/blob/main/test-go-app-chart/values.yaml
+
 4. Setup EKS cluster with the related resources to run EKS like VPC, Subnets, etc. by following EKS Best Practices using any IaC tools (Bonus point: use Terraform/Terragrunt)
 
 Expected Output: IaC code
+https://github.com/makokja/MTLTerraform
 
 5. When the sample application deploys to EKS, they need to have access to
 
@@ -37,8 +42,10 @@ Expected Output: IaC code
 ● SQS with permission; send, receive, delete message (SQS ARN: arn:aws:sqs:ap-southeast-1:123456789123:lms-import-data)
 
 ● Condition: Avoid injecting the generated aws secret/access keys to the application directly.
+Expected Output: IaC code
+https://github.com/makokja/MTLTerraform/blob/main/apppolicy.tf
 
-Expected Output: IaC code 6. Use ArgoCD to deploy this application. To follow GitOps practices, we prefer to have an ArgoCD application defined declaratively in a YAML file if possible.
+ 6. Use ArgoCD to deploy this application. To follow GitOps practices, we prefer to have an ArgoCD application defined declaratively in a YAML file if possible.
 
 Expected output: Yaml files and instruction how to deploy the application or command line
 
