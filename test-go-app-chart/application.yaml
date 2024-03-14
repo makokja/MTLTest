@@ -8,6 +8,9 @@ spec:
     namespace: argocd
   source:
     repoURL: git@github.com:makokja/MTLTest.git
+    sshPrivateKeySecret:
+      name: argocd-secret
+      key: id_rsa
     
     path: test-go-app-chart
     helm:
