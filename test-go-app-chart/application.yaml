@@ -1,20 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: test-go-app
+  name: mtltest
 spec:
   destination:
-    server: https://kubernetes.default.svc
-    namespace: your-namespace  # Replace with your Kubernetes namespace
-  project: default
+    server: 'https://kubernetes.default.svc'
+    namespace: default
   source:
-    repoURL: https://github.com/your-username/your-repo  # Replace with your GitHub repository URL
-    targetRevision: HEAD
-    path: path/to/your/helm/charts  # Path to your Helm charts directory in the repository
+    repoURL: 'https://github.com/makokja/MTLTest'
+    
+    path: '/test-go-app-chart'  
     helm:
       valueFiles:
-        - values.yaml  # Optionally, specify path to your values file if needed
+        - ../test-go-app-chart/values.yaml
+  project: default
   syncPolicy:
     automated:
-      prune: true  # Enable automatic pruning of resources not in Git
-      selfHeal: true
+      prune: true  
+      selfHeal: true  
